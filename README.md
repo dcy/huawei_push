@@ -77,11 +77,11 @@ huawei_push:notification_send_tags(Tags, ExcludeTags, "Title中文", "Content中
 ```
 
 ## Todo:
-- [] lbs_send
-- [] set_user_tag
-- [] query_app_tags
-- [] delete_user_tag
-- [] query_user_tag
+- [ ] lbs_send
+- [ ] set_user_tag
+- [ ] query_app_tags
+- [ ] delete_user_tag
+- [ ] query_user_tag
 
 
 
