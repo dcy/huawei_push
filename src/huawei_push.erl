@@ -54,7 +54,12 @@ get_access_token_info(AppId, AppSecret) ->
 
 single_send(PayloadMaps) ->
     AccessToken = get_access_token(),
-    NewPayload = maps:merge(?HW_SINGLE_ARGS#{<<"access_token">> => AccessToken}, PayloadMaps),
+    NewPayload = case maps:get(<<"access_token">>, PayloadMaps, undefined) of
+                     undefined ->
+                         maps:merge(?HW_SINGLE_ARGS#{<<"access_token">> => AccessToken}, PayloadMaps);
+                     AccessToken ->
+                         PayloadMaps(?HW_NOTIFICATION_ARGS, PayloadMaps)
+                 end,
     send(NewPayload).
 
 single_send(DeviceToken, Message) ->
