@@ -1,7 +1,7 @@
 # huawei_push
 > 华为Huawei推送push server sdk for Erlang    
 > 集成版本：https://github.com/dcy/epush    
-> 使用例子：```src/huawei_push_example.erl```
+> 使用例子：[/src/huawei_push_example.erl](/src/huawei_push_example.erl)
 
 ## AcceceToken
 * get_access_token_info(AppId, AppSecret)
@@ -77,11 +77,11 @@ huawei_push:notification_send_tags(Tags, ExcludeTags, "Title中文", "Content中
 ```
 
 ## Todo:
-- [] lbs_send
-- [] set_user_tag
-- [] query_app_tags
-- [] delete_user_tag
-- [] query_user_tag
+- [ ] lbs_send
+- [ ] set_user_tag
+- [ ] query_app_tags
+- [ ] delete_user_tag
+- [ ] query_user_tag
 
 
 
