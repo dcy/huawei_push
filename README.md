@@ -1,7 +1,7 @@
 # huawei_push
 > 华为Huawei推送push server sdk for Erlang    
 > 集成版本：https://github.com/dcy/epush    
-> 使用例子：[huawei_push_example.erl](/src/huawei_push_example.erl)
+> 使用例子：[/src/huawei_push_example.erl](/src/huawei_push_example.erl)
 
 ## AcceceToken
 * get_access_token_info(AppId, AppSecret)
