@@ -1,0 +1,20 @@
+{application, huawei_push,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { huawei_push_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    hackney,
+    jiffy,
+    lager,
+    eutil
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
