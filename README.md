@@ -76,6 +76,12 @@ ExcludeTags = jiffy:encode(#{<<"exclude_tags">> => [#{<<"music">> => [<<"blue">>
 huawei_push:notification_send_tags(Tags, ExcludeTags, "Title中文", "Content中文"),
 ```
 
+## Todo:
+- [] lbs_send
+- [] set_user_tag
+- [] query_app_tags
+- [] delete_user_tag
+- [] query_user_tag
 
 
 
