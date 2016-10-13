@@ -153,7 +153,6 @@ send(PayloadMaps) ->
         ?SUCCESS ->
             {ok, Code};
         ?ACCESS_TOKEN_EXPIRE ->
-            %self() ! refresh_access_token_now,
             {access_token_expire, Code};
         _ ->
             ?ERROR_MSG("huawei_push error, PayloadMaps: ~p, Result: ~p", [PayloadMaps, Result]),
