@@ -14,6 +14,19 @@
                          <<"nsp_ts">> => erlang:system_time(seconds),
                          <<"cacheMode">> => 0, <<"msgType">> => rand:uniform(100)}).
 
+-define(HW_SET_USER_TAG_ARGS, #{<<"nsp_svc">> => <<"openpush.openapi.set_user_tag">>,
+                           <<"nsp_ts">> => erlang:system_time(seconds)}).
+
+-define(HW_QUERY_APP_TAGS_ARGS, #{<<"nsp_svc">> => <<"openpush.openapi.query_app_tags">>,
+                                  <<"nsp_ts">> => erlang:system_time(seconds)}).
+
+-define(HW_DELETE_USER_TAG_ARGS, #{<<"nsp_svc">> => <<"openpush.openapi.delete_user_tag">>,
+                                   <<"nsp_ts">> => erlang:system_time(seconds)}).
+
+
+-define(HW_QUERY_USER_TAG_ARGS, #{<<"nsp_svc">> => <<"openpush.openapi.query_user_tag">>,
+                                  <<"nsp_ts">> => erlang:system_time(seconds)}).
+ 
 
 
 -endif.

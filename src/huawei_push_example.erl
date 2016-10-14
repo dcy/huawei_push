@@ -1,12 +1,5 @@
 -module(huawei_push_example).
-
--export([single_send/0, single_send2/0,
-         batch_send/0, batch_send2/0,
-         notification_send/0,
-         notification_send_tokens/0,
-         notification_send_all/0,
-         notification_send_tags/0
-        ]).
+-compile(export_all).
 
 single_send() ->
     MsgContent = jiffy:encode(#{<<"body">> => <<"haha">>}),
@@ -48,7 +41,7 @@ notification_send_all() ->
     ok.
 
 notification_send_tokens() ->
-    huawei_push:notification_send_tokens("08670650250202362000003019000001" ,"Title中文", "Content中文"),
+    huawei_push:notification_send_tokens("08670650250202362000003019000001", "Title中文", "Content中文"),
     ok.
 
 notification_send_tags() ->
@@ -56,3 +49,15 @@ notification_send_tags() ->
     ExcludeTags = jiffy:encode(#{<<"exclude_tags">> => [#{<<"music">> => [<<"blue">>]}]}),
     huawei_push:notification_send_tags(Tags, ExcludeTags, "Title中文", "Content中文"),
     ok.
+
+set_user_tag() ->
+    huawei_push:set_user_tag("08670650250202362000003019000001", "location", "Guangzhou").
+
+query_app_tags() ->
+    huawei_push:query_app_tags().
+
+delete_user_tag() ->
+    huawei_push:delete_user_tag("08670650250202362000003019000001", "location").
+
+query_user_tag() ->
+    huawei_push:query_user_tag("08670650250202362000003019000001").

@@ -2,10 +2,16 @@
 
 %%API
 -export([get_access_token_info/2,
-         single_send/1, single_send/2, single_send/3,
-         batch_send/1, batch_send/2, batch_send/3,
+         single_send/1, single_send/2, single_send/3, single_send/4,
+         batch_send/1, batch_send/2, batch_send/3, batch_send/4,
          notification_send/1,
-         notification_send_tokens/3, notification_send_all/2, notification_send_tags/4
+         notification_send_tokens/3, notification_send_tokens/4, notification_send_tokens/5,
+         notification_send_all/2, notification_send_all/3, notification_send_all/4,
+         notification_send_tags/4, notification_send_tags/5, notification_send_tags/6,
+         set_user_tag/3, set_user_tag/4, set_user_tag/5,
+         query_app_tags/0, query_app_tags/1, query_app_tags/2,
+         delete_user_tag/2, delete_user_tag/3, delete_user_tag/4,
+         query_user_tag/1, query_user_tag/2, query_user_tag/3
         ]).
 
 -export([send/1]).
@@ -46,9 +52,9 @@ get_access_token_info(AppId, AppSecret) ->
     {ok, ResultBin} = hackney:body(ClientRef),
     jiffy:decode(ResultBin, [return_maps]).
 
-%get_access_token(AppId, AppSecret) ->
-%    TokenInfo = get_access_token_info(AppId, AppSecret),
-%    maps:get(<<"access_token">>, TokenInfo).
+get_access_token(AppId, AppSecret) ->
+    TokenInfo = get_access_token_info(AppId, AppSecret),
+    maps:get(<<"access_token">>, TokenInfo).
 
 
 
@@ -72,6 +78,10 @@ single_send(AccessToken, DeviceToken, Message) ->
                                <<"message">> => Message},
     send(Payload).
 
+single_send(AppId, AppSecret, DeviceToken, Message) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    single_send(AccessToken, DeviceToken, Message).
+
 batch_send(PayloadMaps) ->
     AccessToken = get_access_token(),
     NewPayload = maps:merge(?HW_BATCH_ARGS#{<<"access_token">> => AccessToken}, PayloadMaps),
@@ -88,6 +98,10 @@ batch_send(AccessToken, DeviceTokenList, Message) ->
                               <<"message">> => Message},
     send(Payload).
 
+batch_send(AppId, AppSecret, DeviceTokenList, Message) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    batch_send(AccessToken, DeviceTokenList, Message).
+
 
 
 notification_send(PayloadMaps) ->
@@ -97,6 +111,9 @@ notification_send(PayloadMaps) ->
 
 notification_send_tokens(Tokens, Title, Content) ->
     AccessToken = get_access_token(),
+    notification_send_tokens(AccessToken, Tokens, Title, Content).
+
+notification_send_tokens(AccessToken, Tokens, Title, Content) ->
     AndroidMsg = jiffy:encode(#{<<"notification_title">> => unicode:characters_to_binary(Title),
                                 <<"notification_content">> => unicode:characters_to_binary(Content),
                                 <<"doings">> => 1}),
@@ -105,8 +122,15 @@ notification_send_tokens(Tokens, Title, Content) ->
                                         <<"android">> => AndroidMsg},
     send(NewPayload).
 
+notification_send_tokens(AppId, AppSecret, Tokens, Title, Content) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    notification_send_tokens(AccessToken, Tokens, Title, Content).
+
 notification_send_all(Title, Content) ->
     AccessToken = get_access_token(),
+    notification_send_all(AccessToken, Title, Content). 
+
+notification_send_all(AccessToken, Title, Content) ->
     AndroidMsg = jiffy:encode(#{<<"notification_title">> => unicode:characters_to_binary(Title),
                                 <<"notification_content">> => unicode:characters_to_binary(Content),
                                 <<"doings">> => 1}),
@@ -115,8 +139,15 @@ notification_send_all(Title, Content) ->
                                         <<"push_type">> => ?PUSH_TYPE_ALL},
     send(NewPayload).
 
+notification_send_all(AppId, AppSecret, Title, Content) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    notification_send_all(AccessToken, Title, Content).
+
 notification_send_tags(Tags, ExcludeTags, Title, Content) ->
     AccessToken = get_access_token(),
+    notification_send_tokens(AccessToken, Tags, ExcludeTags, Title, Content).
+
+notification_send_tags(AccessToken, Tags, ExcludeTags, Title, Content) ->
     AndroidMsg = jiffy:encode(#{<<"notification_title">> => unicode:characters_to_binary(Title),
                                 <<"notification_content">> => unicode:characters_to_binary(Content),
                                 <<"doings">> => 1}),
@@ -127,20 +158,91 @@ notification_send_tags(Tags, ExcludeTags, Title, Content) ->
                                         <<"push_type">> => ?PUSH_TYPE_TAGS},
     send(NewPayload).
 
-
-
+notification_send_tags(AppId, AppSecret, Tags, ExcludeTags, Title, Content) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    notification_send_tags(AccessToken, Tags, ExcludeTags, Title, Content).
     
 
 
+set_user_tag(Token, TagKey, TagValue) ->
+    AccessToken = get_access_token(),
+    set_user_tag(AccessToken, Token, TagKey, TagValue).
 
-send(PayloadMaps) ->
+set_user_tag(AccessToken, Token, TagKey, TagValue) ->
+    Payload = ?HW_SET_USER_TAG_ARGS#{<<"access_token">> => AccessToken,
+                                     <<"token">> => list_to_binary(Token),
+                                     <<"tag_key">> => list_to_binary(TagKey),
+                                     <<"tag_value">> => list_to_binary(TagValue)},
+    send(Payload).
+
+set_user_tag(AppId, AppSecret, Token, TagKey, TagValue) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    set_user_tag(AccessToken, Token, TagKey, TagValue).
+
+
+query_app_tags() ->
+    AccessToken = get_access_token(),
+    query_app_tags(AccessToken).
+
+query_app_tags(AccessToken) ->
+    Payload = ?HW_QUERY_APP_TAGS_ARGS#{<<"access_token">> => AccessToken},
+    Result = do_send(Payload),
+    ?TRACE_VAR(Result).
+
+query_app_tags(AppId, AppSecret) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    query_app_tags(AccessToken).
+
+
+delete_user_tag(Token, TagKey) ->
+    AccessToken = get_access_token(),
+    delete_user_tag(AccessToken, Token, TagKey).
+
+delete_user_tag(AccessToken, Token, TagKey) ->
+    Payload = ?HW_DELETE_USER_TAG_ARGS#{<<"access_token">> => AccessToken,
+                                        <<"token">> => list_to_binary(Token),
+                                        <<"tag_key">> => list_to_binary(TagKey)},
+    send(Payload).
+
+delete_user_tag(AppId, AppSecret, Token, TagKey) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    delete_user_tag(AccessToken, Token, TagKey).
+
+query_user_tag(Token) ->
+    AccessToken = get_access_token(),
+    query_user_tag(AccessToken, Token).
+
+query_user_tag(AccessToken, Token) ->
+    Payload = ?HW_QUERY_USER_TAG_ARGS#{<<"access_token">> => AccessToken,
+                                       <<"token">> => list_to_binary(Token)},
+    send(Payload).
+
+query_user_tag(AppId, AppSecret, Token) ->
+    AccessToken = get_access_token(AppId, AppSecret),
+    query_user_tag(AccessToken, Token).
+
+
+
+
+    
+do_send(PayloadMaps) ->
     Method = post,
     Payload = eutil:urlencode(PayloadMaps),
     Options = [{pool, default}],
     {ok, _StatusCode, _RespHeaders, ClientRef} = hackney:request(Method, ?URL, ?HEADERS,
                                                                  Payload, Options),
     {ok, ResultBin} = hackney:body(ClientRef),
-    ResultOri = jiffy:decode(ResultBin, [return_maps]),
+    jiffy:decode(ResultBin, [return_maps]).
+
+send(PayloadMaps) ->
+    %Method = post,
+    %Payload = eutil:urlencode(PayloadMaps),
+    %Options = [{pool, default}],
+    %{ok, _StatusCode, _RespHeaders, ClientRef} = hackney:request(Method, ?URL, ?HEADERS,
+    %                                                             Payload, Options),
+    %{ok, ResultBin} = hackney:body(ClientRef),
+    %ResultOri = jiffy:decode(ResultBin, [return_maps]),
+    ResultOri = do_send(PayloadMaps),
     Result = case erlang:is_map(ResultOri) of
                  true -> ResultOri;
                  false -> jiffy:decode(ResultOri, [return_maps])
