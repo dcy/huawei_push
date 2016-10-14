@@ -84,14 +84,37 @@ ExcludeTags = jiffy:encode(#{<<"exclude_tags">> => [#{<<"music">> => [<<"blue">>
 huawei_push:notification_send_tags(Tags, ExcludeTags, "Title中文", "Content中文"),
 ```
 
+## set_user_tag
+* set_user_tag(Token, TagKey, TagValue)
+* set_user_tag(AccessToken, Token, TagKey, TagValue)
+* set_user_tag(AppId, AppSecret, Token, TagKey, TagValue)
+```erlang
+huawei_push:set_user_tag("08670650250202362000003019000001", "location", "Guangzhou").
+```
+
+## query_app_tags
+* query_app_tags() ->
+* query_app_tags(AccessToken) ->
+* query_app_tags(AppId, AppSecret) ->
+```erlang
+huawei_push:query_app_tags().
+```
+
+## delete_user_tag
+* delete_user_tag(Token, TagKey) ->
+* delete_user_tag(AccessToken, Token, TagKey) ->
+* delete_user_tag(AppId, AppSecret, Token, TagKey) ->
+```erlang
+huawei_push:delete_user_tag("08670650250202362000003019000001", "location").
+```
+## query_user_tag
+* query_user_tag(Token) ->
+* query_user_tag(AccessToken, Token) ->
+* query_user_tag(AppId, AppSecret, Token) ->
+```erlang
+huawei_push:query_user_tag("08670650250202362000003019000001").
+```
+
+
 ## Todo:
 - [ ] lbs_send
-- [ ] set_user_tag
-- [ ] query_app_tags
-- [ ] delete_user_tag
-- [ ] query_user_tag
-
-
-
-
-
