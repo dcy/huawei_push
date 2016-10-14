@@ -19,12 +19,13 @@ huawei_push:single_send(Maps),
 ```
 
 * single_send(DeviceToken, Message)
+* single_send(AccessToken, DeviceToken, Message)
+* single_send(AcceceToken, DeviceToken, Message)
 ```erlang
 MsgContent = jiffy:encode(#{<<"body">> => <<"haha">>}),
 huawei_push:single_send("08670650250202362000003019000001", MsgContent).
 ```
 
-* single_send(AcceceToken, DeviceToken, Message)
 
 ## batch_send 批量透传
 
@@ -38,13 +39,13 @@ huawei_push:batch_send(Maps).
 ```
 
 * batch_send(DeviceTokenList, Message)
+* batch_send(AccessToken, DeviceTokenList, Message)
+* batch_send(AppId, AppSecret, DeviceTokenList, Message) ->
 ```erlang
 MsgContent = jiffy:encode(#{<<"body">> => <<"haha">>}),
 DeviceTokenList = ["08670650250202362000003019000001"],
 huawei_push:batch_send(DeviceTokenList, MsgContent).
 ```
-
-* batch_send(AcceceToken, DeviceTokenList, Message)
 
 ## notification_send 通知栏
 
@@ -57,19 +58,26 @@ Maps = #{<<"push_type">> => 2, <<"android">> => AndroidMsg},
 huawei_push:notification_send(Maps).
 ```
 ### notification_send_tokens 根据token发送通知栏
+
 * notification_send_tokens(Tokens, Title, Content) 
+* notification_send_tokens(AccessToken, Tokens, Title, Content)
+* notification_send_tokens(AppId, AppSecret, Tokens, Title, Content)
 ```erlang
 huawei_push:notification_send_tokens("08670650250202362000003019000001" ,"Title中文", "Content中文").
 ```
 
 ### notification_send_all 发送全部通知栏
 * notification_send_all(Title, Content)
+* notification_send_all(AccessToken, Title, Content)
+* notification_send_all(AppId, AppSecret, Title, Content)
 ```erlang
 huawei_push:notification_send_all("Title中文", "Content中文"),
 ```
 
 ### notification_send_tags 根据tags发送通知栏
-* notification_send_tags(Tags, ExcludeTags, Title, Content) ->
+* notification_send_tags(Tags, ExcludeTags, Title, Content)
+* notification_send_tags(AccessToken, Tags, ExcludeTags, Title, Content)
+* notification_send_tags(AppId, AppSecret, Tags, ExcludeTags, Title, Content)
 ```erlang
 Tags = jiffy:encode(#{<<"tags">> => [#{<<"location">> => [<<"Guangzhou">>]}]}),
 ExcludeTags = jiffy:encode(#{<<"exclude_tags">> => [#{<<"music">> => [<<"blue">>]}]}),
