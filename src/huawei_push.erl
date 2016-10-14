@@ -173,7 +173,15 @@ set_user_tag(AccessToken, Token, TagKey, TagValue) ->
                                      <<"token">> => list_to_binary(Token),
                                      <<"tag_key">> => list_to_binary(TagKey),
                                      <<"tag_value">> => list_to_binary(TagValue)},
-    send(Payload).
+    ResultOri = do_send(Payload),
+    Result = jiffy:decode(ResultOri, [return_maps]),
+    case maps:get(<<"result_code">>, Result) of
+        <<"0">> ->
+            ok; %%一下是0,一下是"0"
+        _ ->
+            ?ERROR_MSG("huawei_push set_user_tag's error, Payload: ~p, Result: ~p", [Payload, Result]),
+            error
+    end.
 
 set_user_tag(AppId, AppSecret, Token, TagKey, TagValue) ->
     AccessToken = get_access_token(AppId, AppSecret),
@@ -186,8 +194,11 @@ query_app_tags() ->
 
 query_app_tags(AccessToken) ->
     Payload = ?HW_QUERY_APP_TAGS_ARGS#{<<"access_token">> => AccessToken},
-    Result = do_send(Payload),
-    ?TRACE_VAR(Result).
+    ResultOri = do_send(Payload),
+    Result = jiffy:decode(ResultOri, [return_maps]),
+    TagsStr = maps:get(<<"tags">>, Result),
+    jiffy:decode(TagsStr, [return_maps]).
+    
 
 query_app_tags(AppId, AppSecret) ->
     AccessToken = get_access_token(AppId, AppSecret),
@@ -202,7 +213,16 @@ delete_user_tag(AccessToken, Token, TagKey) ->
     Payload = ?HW_DELETE_USER_TAG_ARGS#{<<"access_token">> => AccessToken,
                                         <<"token">> => list_to_binary(Token),
                                         <<"tag_key">> => list_to_binary(TagKey)},
-    send(Payload).
+    ResultOri = do_send(Payload),
+    Result = jiffy:decode(ResultOri, [return_maps]),
+    case maps:get(<<"result_code">>, Result) of
+        <<"0">> ->
+            ok; %%一下是0,一下是"0"
+        _ ->
+            ?ERROR_MSG("huawei_push delete_user_tag's error, Payload: ~p, Result: ~p", [Payload, Result]),
+            error
+    end.
+
 
 delete_user_tag(AppId, AppSecret, Token, TagKey) ->
     AccessToken = get_access_token(AppId, AppSecret),
@@ -215,7 +235,10 @@ query_user_tag(Token) ->
 query_user_tag(AccessToken, Token) ->
     Payload = ?HW_QUERY_USER_TAG_ARGS#{<<"access_token">> => AccessToken,
                                        <<"token">> => list_to_binary(Token)},
-    send(Payload).
+    ResultOri = do_send(Payload),
+    Result = jiffy:decode(ResultOri, [return_maps]),
+    TagsStr = maps:get(<<"tags">>, Result),
+    jiffy:decode(TagsStr, [return_maps]).
 
 query_user_tag(AppId, AppSecret, Token) ->
     AccessToken = get_access_token(AppId, AppSecret),
