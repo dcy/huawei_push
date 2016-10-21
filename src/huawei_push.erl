@@ -21,7 +21,6 @@
 -include_lib("eutil/include/eutil.hrl").
 
 %%return code
--define(SUCCESS, 0).
 -define(ACCESS_TOKEN_EXPIRE, 6).
 
 -define(PUSH_TYPE_TOKENS, 1).
@@ -176,8 +175,8 @@ set_user_tag(AccessToken, Token, TagKey, TagValue) ->
     ResultOri = do_send(Payload),
     Result = jiffy:decode(ResultOri, [return_maps]),
     case maps:get(<<"result_code">>, Result) of
-        <<"0">> ->
-            ok; %%一下是0,一下是"0"
+        <<"0">> -> %%一下是0,一下是"0"
+            ok;
         _ ->
             ?ERROR_MSG("huawei_push set_user_tag's error, Payload: ~p, Result: ~p", [Payload, Result]),
             error
@@ -258,13 +257,6 @@ do_send(PayloadMaps) ->
     jiffy:decode(ResultBin, [return_maps]).
 
 send(PayloadMaps) ->
-    %Method = post,
-    %Payload = eutil:urlencode(PayloadMaps),
-    %Options = [{pool, default}],
-    %{ok, _StatusCode, _RespHeaders, ClientRef} = hackney:request(Method, ?URL, ?HEADERS,
-    %                                                             Payload, Options),
-    %{ok, ResultBin} = hackney:body(ClientRef),
-    %ResultOri = jiffy:decode(ResultBin, [return_maps]),
     ResultOri = do_send(PayloadMaps),
     Result = case erlang:is_map(ResultOri) of
                  true -> ResultOri;
@@ -275,7 +267,7 @@ send(PayloadMaps) ->
                Other -> Other
            end,
     case Code of
-        ?SUCCESS ->
+        ?SUCCESS_0 ->
             {ok, Code};
         ?ACCESS_TOKEN_EXPIRE ->
             {access_token_expire, Code};
