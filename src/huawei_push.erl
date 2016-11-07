@@ -144,7 +144,7 @@ notification_send_all(AppId, AppSecret, Title, Content) ->
 
 notification_send_tags(Tags, ExcludeTags, Title, Content) ->
     AccessToken = get_access_token(),
-    notification_send_tokens(AccessToken, Tags, ExcludeTags, Title, Content).
+    notification_send_tags(AccessToken, Tags, ExcludeTags, Title, Content).
 
 notification_send_tags(AccessToken, Tags, ExcludeTags, Title, Content) ->
     AndroidMsg = jiffy:encode(#{<<"notification_title">> => unicode:characters_to_binary(Title),
